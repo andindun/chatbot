@@ -461,12 +461,21 @@
         }
     
         function displayMessage(message, sender) {
+            var messageContent;
+
+            // Check if the message is a URL to an image
+            if (message.match(/\.(jpeg|jpg|gif|png|PNG)$/) != null) {
+                messageContent = '<img src="' + message + '" alt="Bot Image" style="max-width: 200px;">';
+            } else {
+                messageContent = '<p>' + message + '</p>';
+            }
+
             var messageHTML = '<div class="message-wrapper ' + (sender === 'user' ? 'user' : 'bot') + '">' +
                                 '<div class="name-label">' + (sender === 'user' ? 'Anda' : 'Chatbot') + '</div>' +
                                 '<div class="message message-' + sender + '">' +
-                                    message +
+                                    messageContent +
                                 '</div>' +
-                              '</div>';
+                            '</div>';
             $('#chatbot-chat-box').append(messageHTML);
             $('#chatbot-chat-box').scrollTop($('#chatbot-chat-box')[0].scrollHeight);
         }
@@ -500,26 +509,6 @@
                 }
             });
         }
- function displayBotResponse(response) {
-    const chatContainer = $('#chatbot-chat-box');
-    
-    const messageWrapper = $('<div>').addClass('message-wrapper bot');
-    
-    const messageDiv = $('<div>').addClass('message message-bot');
-    
-    if (response.text) {
-        messageDiv.append($('<p>').text(response.text));
-    }
-    
-    if (response.image_path) {
-        const img = $('<img>').attr('src', `/uploads/${response.image_path}`).attr('alt', 'Bot Image').css('max-width', '200px');
-        messageDiv.append(img);
-    }
-
-    messageWrapper.append(messageDiv);
-    chatContainer.append(messageWrapper);
-    chatContainer.scrollTop(chatContainer[0].scrollHeight);
-}
 
         function getRecommendations(keyword) {
             $.ajax({
@@ -571,12 +560,6 @@
             }
         }
     
-        function displayImage(imageUrl) {
-            const imageWrapper = $("<div>").addClass("message-wrapper");
-            const imageElement = $("<img>").attr("src", imageUrl).addClass("message message-bot");
-            imageWrapper.append(imageElement);
-            chatbotChatBox.append(imageWrapper);
-        }
         // Function to open the image modal and display the clicked image
         function showModal(imgSrc) {
             $('#modal-img').attr('src', imgSrc);
@@ -592,29 +575,7 @@
                 transform: 'scale(1)' // Reset zoom
             });
         }
-    
-          // Function to append chat messages
-          function appendChatMessage(message, isUser) {
-            const chatContainer = document.getElementById('chat-container');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = isUser ? 'user-message' : 'bot-message';
 
-            // Check if the message contains an image path
-            if (message.image_path) {
-                const imageElement = document.createElement('img');
-                imageElement.src = message.image_path;
-                imageElement.alt = 'Chat Image';
-                imageElement.style.maxWidth = '100%'; // Adjust as needed
-                messageDiv.appendChild(imageElement);
-            } else {
-                messageDiv.textContent = message.text;
-            }
-
-            chatContainer.appendChild(messageDiv);
-        }
-
-        // Example of receiving a message from the bot
-        appendChatMessage({text: 'Here is an image', image_path: '/uploads/daftar_ulang.PNG'}, false);
         // Event listener for clicking on images inside chatbot messages
         $(document).on('click', '.chatbot-chat-box .message img', function() {
             var imgSrc = $(this).attr('src');
