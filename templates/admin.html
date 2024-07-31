@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+    background-color: #B14DBC;
+    color: white;
+    text-align: center;
+    padding: 5px; /* Mengurangi padding dari 20px menjadi 10px */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+header h1 {
+    margin: 5px 0; /* Mengurangi margin atas dan bawah dari 0px menjadi 5px */
+    font-size: 28px; /* Mengurangi ukuran font dari 32px menjadi 28px */
+}
+
+header p {
+    font-size: 16px; /* Mengurangi ukuran font dari 18px menjadi 16px */
+    margin-top: 5px; /* Mengurangi margin atas dari 10px menjadi 5px */
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+    margin-top: 5px; /* Mengurangi margin atas dari 10px menjadi 5px */
+}
+
+        main {
+            margin: 0 auto;
+            width: 90%;
+            max-width: 1200px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        h2 {
+            color: #B14DBC;
+        }
+
+        .chart-container {
+            width: calc(33.33% - 30px);
+            margin: 10px;
+            float: left;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .chart-container h2 {
+            background-color: #B14DBC;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin: 0;
+            font-size: 16px;
+            border-bottom: 1px solid #B14DBC;
+        }
+
+        .chart-container h2::after {
+            content: "";
+            display: block;
+            width: 40px;
+            height: 2px;
+            background-color: #0c050f;
+            margin: 8px auto 0;
+        }
+
+        .chart-container #faq-chart,
+        .chart-container #weekly-chart,
+        .chart-container #monthly-chart {
+            width: 100%;
+            height: 300px;
+            align-items: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        th, td {
+    padding: 8px; /* Mengurangi padding dari 10px menjadi 8px */
+    text-align: center; /* Mengatur teks menjadi tengah */
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #B14DBC;
+    color: white;
+    font-size: 14px; /* Menambahkan ukuran font */
+}
+
+        tr:hover {
+            background-color: #f2f2f2;
+        }
+
+        .action-btn {
+    background-color: #B14DBC;
+    color: white;
+    border: none;
+    padding: 6px 12px; /* Menyesuaikan padding */
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px; /* Menyesuaikan ukuran font */
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.action-btn:hover {
+    background-color: #4b0763;
+}
+
+.delete-all-btn {
+    display: block;
+    width: 100%;
+    margin: 10px auto;
+    padding: 8px 16px; /* Menyesuaikan padding */
+    background-color: #B14DBC;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px; /* Menambahkan ukuran font */
+    transition: background-color 0.3s ease;
+}
+
+.delete-all-btn:hover {
+    background-color: #B14DBC;
+}
+
+        /* Styling for logout link */
+        .logout-link {
+    position: absolute;
+    top: 10px; /* Jarak dari atas */
+    right: 20px; /* Jarak dari kanan */
+    background-color: #ffffff; /* Warna ungu dominan */
+    color: #B14DBC;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.logout-link:hover {
+    background-color: #510a8a; /* Warna ungu yang sedikit lebih gelap saat dihover */
+}
+    </style>
+</head>
+<body>
+
+<header>
+    <img src="{{ url_for('static', filename='chatbot_icon.png') }}" alt="Logo" class="logo">
+    <h1>Dashboard Admin</h1>
+    <p>Selamat datang di dashboard admin. Kelola interaksi pengguna dan analisis data di sini.</p>
+    <a href="{{ url_for('logout') }}" class="logout-link">Logout</a>
+</header>
+
+<main>
+    <section>
+        <h2>Chat History</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nama</th>
+                    <th>Telepon</th>
+                    <th>Pesan Pengguna</th>
+                    <th>Respon Bot</th>
+                    <th>Waktu</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for name, phone, user_message, bot_response, timestamp, id in chat_history %}
+                <tr>
+                    <td>{{ name }}</td>
+                    <td>{{ phone }}</td>
+                    <td>{{ user_message }}</td>
+                    <td>{{ bot_response }}</td>
+                    <td>{{ timestamp }}</td>
+                    <td>
+                        <form action="{{ url_for('delete_message', message_id=id) }}" method="POST">
+                            <button type="submit">Hapus</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <section>
+            <h2>Manage Keyword Responses</h2>
+            <form action="{{ url_for('manage_responses') }}" method="POST" enctype="multipart/form-data">
+                <label for="keywords">Keywords (separated by commas):</label>
+                <textarea id="keywords" name="keywords" required></textarea>
+                <label for="response">Response:</label>
+                <textarea id="response" name="response"></textarea>
+                <label for="image">Upload Image (optional):</label>
+                <input type="file" id="image" name="image" accept="image/*">
+                <button type="submit">Add Responses</button>
+            </form>
+            <h3>Existing Responses</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Keyword</th>
+                        <th>Response</th>
+                        <th>Image</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for id, keyword, response, image_path in responses %}
+                    <tr>
+                        <td>{{ id }}</td>
+                        <td>{{ keyword }}</td>
+                        <td>{{ response }}</td>
+                        <td>
+                            {% if image_path %}
+                                <img src="{{ url_for('static', filename=image_path) }}" alt="Image" style="width:100px;">
+                            {% else %}
+                                No image
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form action="{{ url_for('delete_response', id=id) }}" method="POST">
+                                <button type="submit">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+        
+    
+
+    <section>
+        <h2>Frequently Asked Questions</h2>
+        <div id="faq-chart"></div>
+        <script>
+            fetch('/faq_data')
+                .then(response => response.json())
+                .then(data => {
+                    const labels = data.map(row => row[0]);
+                    const counts = data.map(row => row[1]);
+
+                    const trace = {
+                        x: labels,
+                        y: counts,
+                        type: 'bar'
+                    };
+
+                    Plotly.newPlot('faq-chart', [trace], {
+                        title: 'Top 5 Frequently Asked Questions'
+                    });
+                });
+        </script>
+    </section>
+
+    <section>
+        <h2>Weekly Question Counts</h2>
+        <div id="weekly-chart"></div>
+        <script>
+            fetch('/weekly_question_counts')
+                .then(response => response.json())
+                .then(data => {
+                    const labels = data.map(row => row[0]);
+                    const counts = data.map(row => row[1]);
+
+                    const trace = {
+                        x: labels,
+                        y: counts,
+                        type: 'bar'
+                    };
+
+                    Plotly.newPlot('weekly-chart', [trace], {
+                        title: 'Weekly Question Counts'
+                    });
+                });
+        </script>
+    </section>
+
+    <section>
+        <h2>Monthly Question Counts</h2>
+        <div id="monthly-chart"></div>
+        <script>
+            fetch('/monthly_question_counts')
+                .then(response => response.json())
+                .then(data => {
+                    const labels = data.map(row => row[0]);
+                    const counts = data.map(row => row[1]);
+
+                    const trace = {
+                        x: labels,
+                        y: counts,
+                        type: 'bar'
+                    };
+
+                    Plotly.newPlot('monthly-chart', [trace], {
+                        title: 'Monthly Question Counts'
+                    });
+                });
+        </script>
+    </section>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Visualisasi Pertanyaan yang Sering Diajukan
+        fetch('/faq_data')
+            .then(response => response.json())
+            .then(data => {
+                var keywords = data.map(item => item[0]);
+                var counts = data.map(item => item[1]);
+
+                var faqData = [{
+                    x: keywords,
+                    y: counts,
+                    type: 'bar',
+                    marker: {
+                        color: '#6a0dad' // Warna ungu untuk bar
+                    }
+                }];
+
+                var faqLayout = {
+                    title: 'Pertanyaan yang Sering Diajukan',
+                    xaxis: {
+                        title: 'Pertanyaan',
+                        tickangle: -45
+                    },
+                    yaxis: {
+                        title: 'Jumlah'
+                    }
+                };
+
+                Plotly.newPlot('faq-chart', faqData, faqLayout);
+            });
+
+        // Visualisasi Jumlah Pertanyaan per Minggu
+        fetch('/weekly_question_counts')
+            .then(response => response.json())
+            .then(data => {
+                var weeks = data.map(item => item[0]);
+                var counts = data.map(item => item[1]);
+
+                var weeklyData = [{
+                    x: weeks,
+                    y: counts,
+                    type: 'line',
+                    marker: {
+                        color: '#6a0dad' // Warna ungu untuk garis
+                    }
+                }];
+
+                var weeklyLayout = {
+                    title: 'Jumlah Pertanyaan per Minggu',
+                    xaxis: {
+                        title: 'Minggu'
+                    },
+                    yaxis: {
+                        title: 'Jumlah'
+                    }
+                };
+
+                Plotly.newPlot('weekly-chart', weeklyData, weeklyLayout);
+            });
+
+        // Visualisasi Jumlah Pertanyaan per Bulan
+        fetch('/monthly_question_counts')
+            .then(response => response.json())
+            .then(data => {
+                var months = data.map(item => item[0]);
+                var counts = data.map(item => item[1]);
+
+                var monthlyData = [{
+                    x: months,
+                    y: counts,
+                    type: 'line',
+                    marker: {
+                        color: '#6a0dad' // Warna ungu untuk dot
+                    }
+                }];
+
+                var monthlyLayout = {
+                    title: 'Jumlah Pertanyaan per Bulan',
+                    xaxis: {
+                        title: 'Bulan',
+                        tickmode: 'array',
+                        tickvals: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+                        ticktext: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
+                    },
+                    yaxis: {
+                        title: 'Jumlah'
+                    },
+                };
+
+                Plotly.newPlot('monthly-chart', monthlyData, monthlyLayout);
+            });
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,649 @@
+/* CSS styles from style.css */
+body {
+    background-color: #ffffff;
+    color: #000000;
+    font-family: Arial, sans-serif;
+    margin: 0;
+}
+
+header {
+    background-color: #512DA8;
+    color: #FFFFFF;
+    padding: 10px;
+    text-align: center;
+}
+
+main {
+    padding: 20px;
+}
+
+footer {
+    position: fixed;
+    bottom: 50px;
+    right: 20px;
+    z-index: 999;
+}
+
+#chatbot-icon {
+    width: 70px;
+    height: 70px;
+    cursor: pointer;
+}
+
+
+.chatbot-container {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    flex-direction: column;
+    margin-bottom: 10px;
+    width: 450px;
+    background-color: #FFFFFF;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    resize: both; /* Allow resizing both horizontally and vertically */
+    overflow: auto; /* Handle overflow within the container */
+    transition: width 0.3s ease, height 0.3s ease;
+}
+
+
+.tab{
+    color: #757575;
+    font-size: 0.9em;
+}
+
+.chatbot-header {
+    background-color: #673AB7;
+    color: #FFFFFF;
+    padding: 10px;
+    text-align: center;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Menata tombol di kanan */
+    position: relative; /* Tetapkan posisi relatif untuk kontainer */
+}
+.chatbot-container.maximized .bot-header {
+    justify-content: space-between; /* Memastikan nama dan status tetap di tengah */
+}
+
+#maximize-btn {
+    background: none;
+    border: none;
+    color: #FFFFFF;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+#maximize-btn:hover {
+    text-decoration: underline;
+}
+
+        .chatbot-container.maximized {
+            width: 90%;
+            height: 90%;
+            bottom: 5%;
+            right: 5%;
+        }
+
+
+.profile-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.bot-name {
+    font-size: 1.2em;
+    margin-right: 2px; /* Jarak antara nama dan status */
+}
+
+#bot-status {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background-color: #4CAF50;
+    border-radius: 50%;
+    margin-left: 2px;
+}
+
+#close-btn {
+    background: none;
+    border: none;
+    color: #FFFFFF;
+    font-size: 1.2em;
+    cursor: pointer;
+    margin-left: auto;
+}
+
+.chatbot-chat-box {
+    height: 450px;
+    overflow-y: scroll;
+    max-height: 400px;
+    padding: 10px;
+    margin-bottom: 10px; /* Ubah margin bottom agar naik ke atas sedikit */
+}
+
+.chatbot-input {
+    display: flex;
+    align-items: flex-end; /* Mengatur item di sebelah kiri */
+    justify-content: space-between; /* Memastikan input tetap di bagian bawah */
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    position: absolute; /* Gunakan posisi absolut untuk memastikan tetap di bawah */
+    bottom: 0; /* Tempatkan di bagian bawah chatbot-container */
+    left: 0; /* Posisi ke kiri agar rapi */
+    right: 0; /* Posisi ke kanan agar rapi */
+    background-color: #fff; /* Warna latar belakang untuk input */
+}
+
+.chatbot-input input[type="text"] {
+    flex: 1;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    margin-right: 10px;
+}
+
+.chatbot-input button {
+    background-color: #673AB7;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    flex-shrink: 0; /* Tetapkan ukuran tombol tetap */
+}
+
+#chatbot-send-btn:hover {
+    background-color: #5E35B1;
+}
+
+.message-wrapper {
+    margin-bottom: 15px;
+}
+
+.message-wrapper.user {
+    text-align: right;
+}
+
+.name-label {
+    font-size: 0.9em;
+    color: #757575;
+    margin-bottom: 2px;
+}
+
+.message {
+    display: inline-block;
+    padding: 10px;
+    border-radius: 5px;
+    max-width: 80%;
+    word-wrap: break-word;
+}
+
+.message-user {
+    background-color: #7a53be;
+    color: #ffffff
+}
+
+.message-bot {
+    background-color: #7b3683;
+    text-align: left;
+    color: #ffffff
+}
+
+/* Animasi untuk ikon chatbot */
+@keyframes chatbot-icon-animation {
+    0% {
+        transform: translateX(0) rotate(0deg) scale(1);
+    }
+    25% {
+        transform: translateX(5px) rotate(5deg) scale(1);
+    }
+    75% {
+        transform: translateX(-5px) rotate(-5deg) scale(1);
+    }
+    100% {
+        transform: translateX(0) rotate(0deg) scale(1);
+    }
+}
+
+#chatbot-icon {
+    animation: chatbot-icon-animation 2s ease-in-out infinite;
+}
+
+/* Animasi saat hover */
+#chatbot-icon:hover {
+    animation: chatbot-icon-hover 0.5s ease-in-out forwards, chatbot-icon-scale 0.3s ease-in-out forwards;
+}
+
+@keyframes chatbot-icon-hover {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes chatbot-icon-scale {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(1.1);
+    }
+}
+
+
+
+.message p {
+    margin: 0;
+}
+
+.message-time {
+    font-size: 0.8em;
+    color: #757575; /* Warna teks abu-abu */
+    position: absolute;
+    bottom: -15px;
+    right: 0;
+}
+
+.admin-container {
+    margin-top: 20px;
+    color: #757575
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #512DA8; /* Warna header kolom ungu gelap */
+    color: #FFFFFF;
+}
+
+.admin_hapus{
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    background-color: #673AB7;
+    color: #FFFFFF;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Reset styles and global styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f5f5f5;
+}
+
+/* Header styles */
+header {
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.logo img {
+    height: 50px; /* Adjust height as needed */
+    right: 20px;
+}
+
+.navbar {
+    flex: 1;
+    text-align: right;
+}
+
+.menu {
+    list-style-type: none;
+}
+
+.menu li {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.menu li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.menu li a:hover {
+    color: #673AB7; /* Purple color */
+}
+
+/* Main section styles */
+.hero {
+    background-color: #673AB7; /* Purple color */
+    color: #fff;
+    padding: 100px 20px;
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+}
+
+.cta-btn {
+    display: inline-block;
+    background-color: #fff;
+    color: #673AB7;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.cta-btn:hover {
+    background-color: #eee;
+}
+
+.features {
+    display: flex;
+    justify-content: space-around;
+    padding: 50px 20px;
+    background-color: #fff;
+    margin-top: 50px;
+}
+
+.feature {
+    text-align: center;
+}
+
+.feature i {
+    font-size: 3rem;
+    color: #673AB7;
+    margin-bottom: 20px;
+}
+
+.feature h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.feature p {
+    font-size: 1.1rem;
+}
+
+/* Gallery section styles */
+.gallery {
+    /* Add styles for gallery section */
+}
+
+
+/* Responsive styles (if needed) */
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .navbar {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .menu li {
+        display: block;
+        margin: 10px 0;
+    }
+}
+
+.message-bot a {
+    color: #ffffff; /* Warna putih untuk tautan dalam pesan bot */
+    text-decoration: underline; /* Untuk membedakan tautan dari teks biasa */
+}
+
+.message-bot a:hover {
+    color: #dddddd; /* Warna saat tautan di-hover, masih putih tapi lebih terang */
+}
+
+
+.preview-btn {
+    background-color: #ffffff;
+    color: #673AB7;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+.preview-btn:hover {
+    background-color: #f0f0f0;
+}
+
+.message-wrapper.bot .message {
+    display: inline-block;
+    padding: 10px;
+    border-radius: 5px;
+    max-width: 70%; /* Atur lebar maksimal sesuai kebutuhan */
+    word-wrap: break-word;
+    background-color: #673AB7;
+    color: #ffffff;
+    position: relative; /* Penting untuk posisi yang tepat */
+}
+
+.message-wrapper.bot .message img {
+    max-width: 100%; /* Gambar akan disesuaikan dengan lebar pesan */
+    height: auto; /* Tinggi akan disesuaikan secara otomatis */
+    display: block; /* Pastikan gambar ditampilkan dengan benar */
+    border-radius: 5px; /* Menerapkan border-radius untuk tampilan yang lebih baik */
+}
+
+.chatbot-chat-box .message-bot .message img {
+    max-width: 100%;
+    height: auto;
+    cursor: pointer;
+}
+
+/* admin
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+    background-color: #B14DBC;
+    color: white;
+    text-align: center;
+    padding: 5px; /* Mengurangi padding dari 20px menjadi 10px */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+header h1 {
+    margin: 5px 0; /* Mengurangi margin atas dan bawah dari 0px menjadi 5px */
+    font-size: 28px; /* Mengurangi ukuran font dari 32px menjadi 28px */
+}
+
+header p {
+    font-size: 16px; /* Mengurangi ukuran font dari 18px menjadi 16px */
+    margin-top: 5px; /* Mengurangi margin atas dari 10px menjadi 5px */
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+    margin-top: 5px; /* Mengurangi margin atas dari 10px menjadi 5px */
+}
+
+        main {
+            margin: 0 auto;
+            width: 90%;
+            max-width: 1200px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        h2 {
+            color: #B14DBC;
+        }
+
+        .chart-container {
+            width: calc(33.33% - 30px);
+            margin: 10px;
+            float: left;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .chart-container h2 {
+            background-color: #B14DBC;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin: 0;
+            font-size: 16px;
+            border-bottom: 1px solid #B14DBC;
+        }
+
+        .chart-container h2::after {
+            content: "";
+            display: block;
+            width: 40px;
+            height: 2px;
+            background-color: #0c050f;
+            margin: 8px auto 0;
+        }
+
+        .chart-container #faq-chart,
+        .chart-container #weekly-chart,
+        .chart-container #monthly-chart {
+            width: 100%;
+            height: 300px;
+            align-items: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        th, td {
+    padding: 8px; /* Mengurangi padding dari 10px menjadi 8px */
+    text-align: center; /* Mengatur teks menjadi tengah */
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #B14DBC;
+    color: white;
+    font-size: 14px; /* Menambahkan ukuran font */
+}
+
+        tr:hover {
+            background-color: #f2f2f2;
+        }
+
+        .action-btn {
+    background-color: #B14DBC;
+    color: white;
+    border: none;
+    padding: 6px 12px; /* Menyesuaikan padding */
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px; /* Menyesuaikan ukuran font */
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.action-btn:hover {
+    background-color: #4b0763;
+}
+
+.delete-all-btn {
+    display: block;
+    width: 100%;
+    margin: 10px auto;
+    padding: 8px 16px; /* Menyesuaikan padding */
+    background-color: #B14DBC;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px; /* Menambahkan ukuran font */
+    transition: background-color 0.3s ease;
+}
+
+.delete-all-btn:hover {
+    background-color: #B14DBC;
+}
+
+        /* Styling for logout link */
+        .logout-link {
+    position: absolute;
+    top: 10px; /* Jarak dari atas */
+    right: 20px; /* Jarak dari kanan */
+    background-color: #ffffff; /* Warna ungu dominan */
+    color: #B14DBC;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.logout-link:hover {
+    background-color: #510a8a; /* Warna ungu yang sedikit lebih gelap saat dihover */
+}

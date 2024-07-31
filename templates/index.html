@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PMB STMIK Widya Cipta Dharma</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        header{
+            background-color: #B14DBC;
+            color: white;
+            padding: 10px 0;
+        }
+
+        .header-container, .footer-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: auto;
+            padding: 0 20px;
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar ul li {
+            margin-right: 20px;
+            margin-left: 20px;
+        }
+
+        .navbar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 65px 20px;
+            background-color: #B14DBC;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 36px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            margin: 20px 0;
+        }
+
+        .cta-btn {
+            background-color: #ffffff;
+            color: #7b3683;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .features {
+            display: flex;
+            justify-content: space-around;
+            padding: 50px 20px;
+        }
+
+        .feature {
+            text-align: center;
+            width: 30%;
+        }
+
+        .feature i {
+            font-size: 40px;
+            margin-bottom: 20px;
+            color: #B14DBC;
+        }
+
+        .feature h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .feature p {
+            font-size: 16px;
+            color: #666;
+        }
+
+
+        .chatbot-header {
+            display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #673AB7;
+    color: #FFFFFF;
+    padding: 10px;
+    text-align: center;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    position: relative; /* Tetapkan posisi relatif untuk kontainer */
+}
+
+        .chatbot-header .profile-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .bot-name {
+    font-size: 1.2em;
+    margin-right: 10px; /* Ubah margin agar lebih dekat dengan status */
+    flex-grow: 1; /* Memastikan nama chatbot memenuhi ruang yang tersedia */
+}
+
+
+
+.chatbot-container.maximized .bot-header {
+    justify-content: center; /* Memastikan nama dan status tetap di tengah */
+}
+        .chatbot-header #close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+/* Default style for chatbot chat box */
+.chatbot-chat-box {
+    height: 400px; /* Sesuaikan tinggi sesuai kebutuhan */
+    overflow-y: auto; /* Gunakan auto untuk mengaktifkan overflow saat diperlukan */
+    padding: 10px;
+    margin-bottom: 40px; /* Margin bottom default untuk layar kecil */
+}
+
+/* Media query untuk layar yang lebih besar */
+@media screen and (min-width: 768px) {
+    .chatbot-chat-box {
+        margin-bottom: 40px; /* Kurangi margin bottom untuk layar besar */
+    }
+}
+
+
+        .chatbot-chat-box .message-wrapper {
+            margin-bottom: 10px;
+        }
+
+        .chatbot-chat-box .name-label {
+            font-size: 12px;
+            margin-bottom: 4px;
+            color: #999;
+        }
+
+        .chatbot-chat-box .message {
+            border-radius: 10px;
+            padding: 10px;
+            display: inline-block;
+            max-width: 80%;
+            line-height: 1.4;
+            word-wrap: break-word;
+            animation: fadeIn 0.5s;
+        }
+
+        .chatbot-chat-box .message-user {
+            background-color: #e0e0e0;
+            color: #000;
+            text-align: right;
+            margin-left: auto;
+        }
+
+        .chatbot-chat-box .message-bot {
+            background-color: #673AB7;
+            color: white;
+        }
+
+/* Style untuk input chatbot */
+.chatbot-input {
+    display: flex;
+    align-items: center;
+    border-top: 1px solid #ddd;
+    margin-top: 5px; /* Sesuaikan jarak dari kotak chat */
+    padding-top: 10px; /* Sesuaikan padding top jika perlu */
+}
+
+.chatbot-input input[type="text"] {
+    flex: 1;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    margin-right: 10px;
+}
+
+.chatbot-input button {
+    background-color: #673AB7;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+        /* Recommendation Styles */
+        .recommendation-section {
+            margin-top: 10px;
+        }
+
+        .recommendation-section p {
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #666;
+        }
+
+        .recommendation-buttons {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .recommendation-btn {
+            background-color: #673AB7;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            display: inline-block;
+            max-width: 70%;
+            font-size: 14px;
+        }
+
+         /* CSS untuk gambar dalam chatbot */
+/* CSS untuk modal gambar */
+#image-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Tambahkan ini */
+}
+
+#image-modal img {
+    max-width: 90%;
+    max-height: 90%;
+    transition: transform 0.25s ease;
+}
+
+.modal-content {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.close-modal {
+    position: absolute;
+    top: 20px; /* Sesuaikan jarak dari atas */
+    right: 20px; /* Sesuaikan jarak dari kanan */
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+/* Perbaikan untuk zoom in/out */
+#image-modal img {
+    transition: transform 0.25s ease;
+    cursor: grab; /* Tambahkan ini untuk kursor */
+}
+
+.close-modal {
+    position: absolute;
+    top: 20px; /* Sesuaikan jarak dari atas */
+    right: 20px; /* Sesuaikan jarak dari kanan */
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+    z-index: 10000; /* Pastikan tombol close muncul di atas modal */
+}
+
+        /* Keyframes for animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-container">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="University Logo">
+        </div>
+        <nav class="navbar">
+            <ul class="menu">
+                <li><a href="#">Beranda</a></li>
+                <li><a href="https://pmb.wicida.ac.id/biaya-kuliah">Biaya Kuliah</a></li>
+                <li><a href="https://pmb.wicida.ac.id/daftar">Daftar</a></li>
+                <li><a href="https://pmb.wicida.ac.id/#reservation">Kontak</a></li>
+                <li><a href="https://pmb.wicida.ac.id/login">Login</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <section class="hero">
+        <h1>Selamat Datang di PMB STMIK Widya Cipta Dharma</h1>
+        <p>PENERIMAAN MAHASISWA BARU STMIK WICIDA 2024/2025</p>
+        <a href="https://pmb.wicida.ac.id/daftar" class="cta-btn">Daftar Sekarang</a>
+    </section>
+
+    <section class="features">
+        <div class="feature">
+            <i class="fas fa-book-open"></i>
+            <h2>Program Studi Unggulan</h2>
+            <p>Temukan program studi yang sesuai dengan minat dan bakat Anda.</p>
+        </div>
+        <div class="feature">
+            <i class="fas fa-calendar-alt"></i>
+            <h2>Kegiatan Kampus</h2>
+            <p>Berbagai kegiatan akademik dan non-akademik yang menarik.</p>
+        </div>
+        <div class="feature">
+            <i class="fas fa-newspaper"></i>
+            <h2>Berita Terbaru</h2>
+            <p>Dapatkan informasi terbaru seputar kegiatan kampus dan prestasi mahasiswa.</p>
+        </div>
+    </section>
+
+    <section class="gallery">
+        <!-- Galeri foto atau video kegiatan kampus -->
+    </section>
+</main>
+
+<footer>
+    <div class="footer-container">
+        <img id="chatbot-icon" src="{{ url_for('static', filename='chatbot_icon.png') }}" alt="Chatbot Icon">
+    </div>
+</footer>
+
+<div id="chatbot-container" class="chatbot-container">
+    <div class="chatbot-header">
+        <img class="profile-img" src="{{ url_for('static', filename='chatbot_icon.png') }}" alt="Chatbot Profile">
+        <span class="bot-name">Chatbot PMB Wicida</span>
+        <div class="header-buttons">
+            <button id="maximize-btn"><i class="fas fa-expand"></i></button>
+            <button id="close-btn">&times;</button>
+        </div>
+        
+    </div>
+    <div id="chatbot-chat-box" class="chatbot-chat-box">
+        <!-- Chatbox content will be dynamically populated -->
+    </div>
+    <div class="chatbot-input">
+        <input type="text" id="chatbot-user-input" placeholder="Silahkan ketik pertanyaanmu...">
+        <button id="chatbot-send-btn">Kirim</button>
+    </div>
+</div>
+
+<!-- Modal untuk tampilan gambar -->
+<div id="image-modal">
+    <span class="close-modal">&times;</span>
+    <div class="modal-content">
+        <img id="modal-img" src="">
+    </div>
+</div>
+
+
+
+<script>
+    $(document).ready(function() {
+        var botOnline = true;
+        var greetingShown = false;
+    
+        $('#chatbot-icon').click(function() {
+            if (!greetingShown) {
+                initializeSession();
+                greetingShown = true;
+            }
+            $('#chatbot-container').fadeIn();
+        });
+    
+        $('#close-btn').click(function() {
+            $('#chatbot-container').fadeOut();
+            resetGreeting();
+        });
+    
+        $('#maximize-btn').click(function() {
+            toggleMaximize();
+        });
+    
+        $('#chatbot-send-btn').click(function() {
+            sendMessage();
+        });
+    
+        $('#chatbot-user-input').keypress(function(event) {
+            if (event.which === 13) {
+                sendMessage();
+            }
+        });
+    
+        function initializeSession() {
+            $.ajax({
+                url: '/init_session',
+                type: 'POST',
+                contentType: 'application/json',
+                success: function(response) {
+                    displayMessage(response, 'bot');
+                },
+                error: function(error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
+    
+        function resetGreeting() {
+            greetingShown = false;
+            $('#chatbot-chat-box').html('');
+        }
+    
+        function sendMessage() {
+            var userMessage = $('#chatbot-user-input').val().trim();
+            if (userMessage !== '') {
+                displayMessage(userMessage, 'user');
+                getChatbotResponse(userMessage);
+                $('#chatbot-user-input').val('');
+            }
+        }
+    
+        function displayMessage(message, sender) {
+            var messageHTML = '<div class="message-wrapper ' + (sender === 'user' ? 'user' : 'bot') + '">' +
+                                '<div class="name-label">' + (sender === 'user' ? 'Anda' : 'Chatbot') + '</div>' +
+                                '<div class="message message-' + sender + '">' +
+                                    message +
+                                '</div>' +
+                              '</div>';
+            $('#chatbot-chat-box').append(messageHTML);
+            $('#chatbot-chat-box').scrollTop($('#chatbot-chat-box')[0].scrollHeight);
+        }
+    
+        function getChatbotResponse(message) {
+            $.ajax({
+                url: '/get_response',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ message: message }),
+                success: function(response) {
+                    handleBotResponses(response.responses);
+                    if (response.responses.includes('Maaf saya tidak tahu')) {
+                        getRecommendations(message);
+                    } else {
+                        checkRecommendations(response.recommendations);
+                    }
+                },
+                error: function(error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
+    
+        function handleBotResponses(responses) {
+            responses.forEach(function(response) {
+                if (Array.isArray(response)) {
+                    checkRecommendations(response);
+                } else {
+                    displayMessage(response, 'bot');
+                }
+            });
+        }
+ function displayBotResponse(response) {
+    const chatContainer = $('#chatbot-chat-box');
+    
+    const messageWrapper = $('<div>').addClass('message-wrapper bot');
+    
+    const messageDiv = $('<div>').addClass('message message-bot');
+    
+    if (response.text) {
+        messageDiv.append($('<p>').text(response.text));
+    }
+    
+    if (response.image_path) {
+        const img = $('<img>').attr('src', `/uploads/${response.image_path}`).attr('alt', 'Bot Image').css('max-width', '200px');
+        messageDiv.append(img);
+    }
+
+    messageWrapper.append(messageDiv);
+    chatContainer.append(messageWrapper);
+    chatContainer.scrollTop(chatContainer[0].scrollHeight);
+}
+
+        function getRecommendations(keyword) {
+            $.ajax({
+                url: '/get_recommendations',
+                type: 'GET',
+                data: { keyword: keyword },
+                success: function(response) {
+                    checkRecommendations(response.recommendations);
+                },
+                error: function(error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
+    
+        function checkRecommendations(recommendations) {
+            // Clear existing recommendations before adding new ones
+            $('.recommendation-section').remove();
+    
+            if (recommendations && recommendations.length > 0) {
+                var recommendationsHTML = '<div class="recommendation-section">' +
+                                            '<p>Pertanyaan Rekomendasi:</p>' +
+                                            '<div class="recommendation-buttons">';
+                recommendations.forEach(function(question) {
+                    recommendationsHTML += '<button class="recommendation-btn">' + question + '</button>';
+                });
+                recommendationsHTML += '</div></div>';
+                $('#chatbot-chat-box').append(recommendationsHTML);
+                $('#chatbot-chat-box').scrollTop($('#chatbot-chat-box')[0].scrollHeight);
+    
+                $('.recommendation-btn').click(function() {
+                    var question = $(this).text();
+                    $('#chatbot-user-input').val(question);
+                    sendMessage();
+                });
+            } else {
+                console.log('Tidak ada rekomendasi yang ditemukan untuk kata kunci ini.');
+            }
+        }
+    
+        function toggleMaximize() {
+            var chatbotContainer = $('#chatbot-container');
+            chatbotContainer.toggleClass('maximized');
+            var maximizeBtn = $('#maximize-btn');
+            if (chatbotContainer.hasClass('maximized')) {
+                maximizeBtn.html('<i class="fas fa-compress"></i>');
+            } else {
+                maximizeBtn.html('<i class="fas fa-expand"></i>');
+            }
+        }
+    
+        function displayImage(imageUrl) {
+            const imageWrapper = $("<div>").addClass("message-wrapper");
+            const imageElement = $("<img>").attr("src", imageUrl).addClass("message message-bot");
+            imageWrapper.append(imageElement);
+            chatbotChatBox.append(imageWrapper);
+        }
+        // Function to open the image modal and display the clicked image
+        function showModal(imgSrc) {
+            $('#modal-img').attr('src', imgSrc);
+            $('#image-modal').fadeIn();
+        }
+    
+        // Function to close the image modal
+        function closeModal() {
+            $('#image-modal').fadeOut();
+            $('#modal-img').css({
+                width: 'auto',
+                height: 'auto',
+                transform: 'scale(1)' // Reset zoom
+            });
+        }
+    
+          // Function to append chat messages
+          function appendChatMessage(message, isUser) {
+            const chatContainer = document.getElementById('chat-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = isUser ? 'user-message' : 'bot-message';
+
+            // Check if the message contains an image path
+            if (message.image_path) {
+                const imageElement = document.createElement('img');
+                imageElement.src = message.image_path;
+                imageElement.alt = 'Chat Image';
+                imageElement.style.maxWidth = '100%'; // Adjust as needed
+                messageDiv.appendChild(imageElement);
+            } else {
+                messageDiv.textContent = message.text;
+            }
+
+            chatContainer.appendChild(messageDiv);
+        }
+
+        // Example of receiving a message from the bot
+        appendChatMessage({text: 'Here is an image', image_path: '/uploads/daftar_ulang.PNG'}, false);
+        // Event listener for clicking on images inside chatbot messages
+        $(document).on('click', '.chatbot-chat-box .message img', function() {
+            var imgSrc = $(this).attr('src');
+            showModal(imgSrc);
+        });
+    
+        // Event listener for closing the modal using close button
+        $(document).on('click', '.close-modal', function() {
+            closeModal();
+        });
+    
+        // Event listener for closing the modal when clicking outside the image
+        $(document).on('click', '#image-modal', function(event) {
+            if (event.target === this) {
+                closeModal();
+            }
+        });
+    
+        // Event listener for zooming the image
+        $(document).on('wheel', '#image-modal', function(event) {
+            zoomImage(event);
+        });
+    
+        // Function to zoom in/out the image
+        function zoomImage(event) {
+            event.preventDefault();
+            var scale = 1.1;
+            var img = $('#modal-img');
+            var currentWidth = img.width();
+            var currentHeight = img.height();
+            var newWidth, newHeight;
+    
+            if (event.originalEvent.deltaY < 0) {
+                // Zoom in
+                newWidth = currentWidth * scale;
+                newHeight = currentHeight * scale;
+            } else {
+                // Zoom out
+                newWidth = currentWidth / scale;
+                newHeight = currentHeight / scale;
+            }
+    
+            img.width(newWidth);
+            img.height(newHeight);
+        }
+    });
+    </script>
+    
+
+
+
+</body>
+
+</html>
