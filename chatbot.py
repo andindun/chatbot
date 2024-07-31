@@ -8,7 +8,7 @@ def get_response(user_message):
     # Query database for matching keyword
     with sqlite3.connect('chat_history.db') as conn:
         cursor = conn.cursor()
-        cursor.execute('SELECT response, image_path FROM chatbot_responses WHERE keyword = ?', (user_message,))
+        cursor.execute('SELECT response, image_path FROM chatbot_responses WHERE recomendation LIKE ? ''', ('%' + user_message + '%',))
         result = cursor.fetchone()
         
         if result:

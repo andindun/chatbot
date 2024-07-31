@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for, send_from_directory
 import sqlite3
+import random
 from datetime import datetime
 import pytz
 import re
@@ -45,7 +46,7 @@ def admin_dashboard():
             ''')
             chat_history = cursor.fetchall()
 
-            cursor.execute('SELECT id, keyword, response, image_path FROM chatbot_responses')
+            cursor.execute('SELECT id, keyword, recomendation, response, image_path FROM chatbot_responses')
             responses = cursor.fetchall()
 
         chat_history_wita = [
@@ -63,40 +64,6 @@ def logout():
     session.pop('logged_in', None)
     return redirect(url_for('login'))
 
-def init_db():
-    with sqlite3.connect('chat_history.db') as conn:
-        cursor = conn.cursor()
-
-        # Table to store chat history
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS chat_history (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                user_id INTEGER,
-                user_message TEXT,
-                bot_response TEXT,
-                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (user_id) REFERENCES users (id)
-            )
-        ''')
-
-        # Table to store user information
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT,
-                phone TEXT
-            )
-        ''')
-
-        # Table to store keyword responses
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS chatbot_responses (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                keyword TEXT,
-                response TEXT,
-                image_url TEXT
-            )
-        ''')
 
 
 # Function to convert time to WITA (Central Indonesia Time)
@@ -113,49 +80,35 @@ def convert_to_wita(timestamp_utc):
 
 # Function to get recommended questions based on keywords
 def get_recommended_questions(keyword):
-    # Default recommendations
-    default_recommendations = [
-        "Akreditas Kampus",
-        "Program Studi",
-        "Cara Daftar",
-        "Cara Pembayaran",
-        "Validasi"
-    ]
+    # Establish a connection to the database
+    conn = sqlite3.connect('chat_history.db')
+    cursor = conn.cursor()
 
-    # List to store dynamic recommendations
-    recommendations = []
+    # Query the database for recommendations based on the keyword
+    cursor.execute('''
+        SELECT recomendation FROM chatbot_responses
+        WHERE keyword LIKE ?
+    ''', ('%' + keyword + '%',))
 
-    # Check for additional recommendations based on keyword
-    if "akreditas" in keyword and any(word in keyword for word in ("kampus", "stmik", "wicida")):
-        recommendations.extend([
-            "Apa akreditas STMIK Wicida?",
-            "Apa Akreditas Prodi Teknik Informatika?",
-            "Apa Akreditas Prodi Sistem Informasi?",
-            "Apa Akreditas Prodi Bisnis Digital?",
-        ])
-    elif any(word in keyword for word in ("alur", "prosedur")):
-        recommendations.extend([
-            "Apa saja persyaratan pendaftaran jalur PMDK?",
-            "Apa saja persyaratan pendaftaran jalur Reguler?",
-            "Apa saja persyaratan pendaftaran jalur Alih Jenjang?",
-        ])
-    elif "daftar" in keyword and any(word in keyword for word in ("cara daftar", "mendaftar")):
-        recommendations.extend([
-            "Bagaimana cara mendaftar di STMIK Wicida?",
-            "Prosedur pendaftaran di STMIK Wicida?",
-        ])
-    elif any(word in keyword for word in ("biaya", "bayar", "cara bayar")):
-        recommendations.extend([
-            "Berapa biaya pendaftaran di STMIK Wicida?",
-            "Berapa biaya daftar ulang di STMIK Wicida?",
-            "Cara pembayaran biaya pendaftaran di STMIK Wicida?",
-            "Bagaimana cara validasi pembayaran?",
-        ])
+    rows = cursor.fetchall()
+
+    # If there are recommendations in the database, use them
+    if rows:
+        recommendations = [row[0] for row in rows]
     else:
-        recommendations = default_recommendations
+        # Fetch all recommendations from the database
+        cursor.execute('''
+            SELECT recomendation FROM chatbot_responses
+        ''')
+        all_recommendations = cursor.fetchall()
+
+        # Randomize and limit to 3 recommendations
+        recommendations = random.sample([row[0] for row in all_recommendations], min(3, len(all_recommendations)))
+
+    # Close the database connection
+    conn.close()
 
     return recommendations
-
 # Route for the main page
 @app.route('/')
 def index():
@@ -283,6 +236,7 @@ def get_monthly_question_counts():
 def manage_responses():
     if 'logged_in' in session and session['logged_in']:
         keywords = request.form.get('keywords').split(',')
+        recomendation = request.form.get('recomendation')
         response = request.form.get('response')
         image = request.files.get('image')
         image_path = None
@@ -297,8 +251,8 @@ def manage_responses():
             for keyword in keywords:
                 keyword = keyword.strip()
                 if keyword:
-                    cursor.execute('INSERT INTO chatbot_responses (keyword, response, image_path) VALUES (?, ?, ?)', 
-                                   (keyword, response, image_path))
+                    cursor.execute('INSERT INTO chatbot_responses (keyword, recomendation, response, image_path) VALUES (?, ?, ?, ?)', 
+                                   (keyword, recomendation, response, image_path))
             conn.commit()
         return redirect(url_for('admin_dashboard'))
     else:

@@ -218,6 +218,8 @@ th {
             <form action="{{ url_for('manage_responses') }}" method="POST" enctype="multipart/form-data">
                 <label for="keywords">Keywords (separated by commas):</label>
                 <textarea id="keywords" name="keywords" required></textarea>
+                <label for="recomendation" >Recomendation:</label>
+                <textarea id="recomendation" name="recomendation"></textarea>
                 <label for="response">Response:</label>
                 <textarea id="response" name="response"></textarea>
                 <label for="image">Upload Image (optional):</label>
@@ -230,20 +232,22 @@ th {
                     <tr>
                         <th>ID</th>
                         <th>Keyword</th>
+                        <th>Recomendation</th>
                         <th>Response</th>
                         <th>Image</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for id, keyword, response, image_path in responses %}
+                    {% for id, keyword, recomendation, response, image_path in responses %}
                     <tr>
                         <td>{{ id }}</td>
                         <td>{{ keyword }}</td>
+                        <td>{{ recomendation }}</td>
                         <td>{{ response }}</td>
                         <td>
                             {% if image_path %}
-                                <img src="{{ url_for('static', filename=image_path) }}" alt="Image" style="width:100px;">
+                                <img src="{{ image_path }}" alt="Image" style="width:100px;">
                             {% else %}
                                 No image
                             {% endif %}

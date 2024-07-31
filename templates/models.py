@@ -31,6 +31,8 @@ def init_db():
             CREATE TABLE IF NOT EXISTS chatbot_responses (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 keyword TEXT,
-                response TEXT
+                recomendation TEXT,
+                response TEXT,
+                image_path TEXT
             )
         ''')
