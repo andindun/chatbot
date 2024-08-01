@@ -87,8 +87,8 @@ def get_recommended_questions(keyword):
     # Query the database for recommendations based on the keyword
     cursor.execute('''
         SELECT recomendation FROM chatbot_responses
-        WHERE keyword LIKE ?
-    ''', ('%' + keyword + '%',))
+        WHERE keyword LIKE ? OR recomendation LIKE ?
+    ''', ('%' + keyword + '%', '%' + keyword + '%'))
 
     rows = cursor.fetchall()
 
