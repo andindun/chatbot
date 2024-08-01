@@ -5,22 +5,26 @@ from flask import url_for
 
 # chatbot.py
 def get_response(user_message):
+    # Convert the user_message to lowercase and split into individual words
+    keywords = user_message.lower().split()
+
     # Query database for matching keyword
     with sqlite3.connect('chat_history.db') as conn:
         cursor = conn.cursor()
-        cursor.execute('SELECT response, image_path FROM chatbot_responses WHERE keyword = ?', (user_message,))
-        result = cursor.fetchone()
-        
-        if result:
-            response, image_path = result
-            if image_path:
-                # Return response with image URL
-                image_url = url_for('uploaded_file', filename=os.path.basename(image_path))
-                return [response, image_url]
-            return [response]
-        else:
+        # Iterate over each keyword and search in the database
+        for keyword in keywords:
+            cursor.execute('SELECT response, image_path FROM chatbot_responses WHERE keyword LIKE ?', ('%' + keyword + '%',))
+            result = cursor.fetchone()
+            
+            if result:
+                response, image_path = result
+                if image_path:
+                    # Return response with image URL
+                    image_url = url_for('uploaded_file', filename=os.path.basename(image_path))
+                    return [response, image_url]
+                return [response]
             # Default response if no keyword match found
-            return ["Maaf, saya tidak mengerti pertanyaan anda."]
+        return ["Maaf, saya tidak mengerti pertanyaan anda."]
 
 
 import sqlite3

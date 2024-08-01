@@ -25,6 +25,17 @@ def create_tables():
         )
     ''')
 
+    #Buat table untuk menyimpan keywords, recomendations, dan responses
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS chatbot_responses (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            keyword TEXT,
+            recomendation TEXT,
+            response TEXT,
+            image_path TEXT
+        )
+    ''')
+
     conn.commit()
     conn.close()
 
@@ -34,6 +45,7 @@ def reset_database():
 
     cursor.execute('DROP TABLE IF EXISTS chat_history')
     cursor.execute('DROP TABLE IF EXISTS users')
+    cursor.execute('DROP TABLE IF EXISTS chatbot_responses')
 
     conn.commit()
     conn.close()
